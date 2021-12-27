@@ -79,13 +79,13 @@
       "KC_LCTL",
       "KC_LGUI",
       "LALT_T(KC_APP)",
-      "KC_RALT",
+      "KC_LALT",
       "MO(1)",
       "KC_SPC",
       "KC_SPC",
       "KC_RALT",
       "MO(1)",
-      "KC_LCTL",
+      "KC_RCTL",
       "KC_LEFT",
       "KC_DOWN",
       "KC_RGHT"
@@ -156,7 +156,7 @@
       "ANY(UC(0x2265))",
       "KC_TRNS",
       "KC_TRNS",
-      "KC_TRNS",
+      "KC_VOLU",
       "KC_TRNS",
       "KC_TRNS",
       "KC_TRNS",
@@ -171,7 +171,7 @@
       "KC_TRNS",
       "KC_TRNS",
       "KC_TRNS",
-      "KC_TRNS",
+      "KC_VOLD",
       "KC_TRNS"
     ],
     [
@@ -408,7 +408,7 @@
       "KC_TRNS",
       "KC_TRNS",
       "KC_TRNS",
-      "KC_TRNS",
+      "KC_VOLU",
       "KC_TRNS",
       "KC_TRNS",
       "KC_TRNS",
@@ -423,7 +423,7 @@
       "KC_TRNS",
       "KC_TRNS",
       "KC_TRNS",
-      "KC_TRNS",
+      "KC_VOLD",
       "KC_TRNS"
     ],
     [
