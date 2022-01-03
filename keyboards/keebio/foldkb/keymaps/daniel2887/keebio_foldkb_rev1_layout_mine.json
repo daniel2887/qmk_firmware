@@ -149,9 +149,9 @@
       "KC_TRNS",
       "KC_BSPC",
       "KC_BSPC",
-      "KC_VOLD",
       "KC_TRNS",
-      "KC_VOLU",
+      "KC_TRNS",
+      "KC_TRNS",
       "KC_TRNS"
     ],
     [
@@ -286,7 +286,7 @@
       "KC_COMM",
       "KC_DOT",
       "KC_SLSH",
-      "KC_RSFT",
+      "KC_UP",
       "KC_APP",
       "KC_APP",
       "KC_LCTL",
@@ -297,10 +297,10 @@
       "KC_SPC",
       "KC_SPC",
       "KC_SPC",
-      "KC_RGUI",
       "MO(4)",
-      "KC_RALT",
-      "KC_RCTL"
+      "KC_LEFT",
+      "KC_DOWN",
+      "KC_RGHT"
     ],
     [
       "RESET",
@@ -360,7 +360,7 @@
       "KC_TRNS",
       "KC_TRNS",
       "KC_TRNS",
-      "KC_TRNS",
+      "KC_VOLU",
       "KC_TRNS",
       "KC_CALC",
       "KC_TRNS",
@@ -371,9 +371,9 @@
       "KC_TRNS",
       "KC_BSPC",
       "KC_BSPC",
-      "KC_VOLD",
       "KC_TRNS",
-      "KC_VOLU",
+      "KC_TRNS",
+      "KC_VOLD",
       "KC_TRNS"
     ],
     [
