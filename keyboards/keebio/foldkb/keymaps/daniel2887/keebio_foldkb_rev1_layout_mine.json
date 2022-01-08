@@ -286,7 +286,7 @@
       "KC_COMM",
       "KC_DOT",
       "KC_SLSH",
-      "KC_UP",
+      "RSFT_T(KC_UP)",
       "KC_APP",
       "KC_APP",
       "KC_LCTL",
