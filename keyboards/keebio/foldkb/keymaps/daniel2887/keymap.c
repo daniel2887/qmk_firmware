@@ -99,3 +99,46 @@ layer_state_t default_layer_state_set_user(layer_state_t state) {
 	}
     return state;
 }
+
+// From https://www.reddit.com/r/MechanicalKeyboards/comments/ix65z0/looking_for_qmk_led_idle_timeout_info/
+// Slightly modified by me
+// Backlight timeout feature
+#define RGB_TIMEOUT 15    // in minutes
+static uint16_t idle_timer = 0;
+static uint8_t halfmin_counter = 0;
+static uint8_t old_rgb_value = -1; 
+static bool rgb_on = true;
+
+void matrix_scan_user(void) {
+		// idle_timer needs to be set one time
+		if (idle_timer == 0)
+			idle_timer = timer_read();
+
+		if ((timer_elapsed(idle_timer) > 30000) && rgb_on) {
+			halfmin_counter++;
+			idle_timer = timer_read();
+		}
+
+		if ((halfmin_counter >= RGB_TIMEOUT * 2) && rgb_on) {
+			rgblight_disable_noeeprom();
+			rgb_on = false;
+			halfmin_counter = 0;
+		}
+};
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+	if (record->event.pressed) {
+		if (rgb_on == false || old_rgb_value == -1) {
+			if (old_rgb_value == -1)
+				old_rgb_value = 1;
+
+			old_rgb_value = 1;
+			rgblight_enable_noeeprom();
+
+			rgb_on = true;
+		}
+		idle_timer = timer_read();
+		halfmin_counter = 0;
+	}
+	return true;
+}
