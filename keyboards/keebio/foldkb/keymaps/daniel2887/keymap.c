@@ -23,14 +23,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //     Layer 0: Every day layer, with left space acting as Fn
 //     Layer 1: Navigation layer
 //     Layer 2: Mouse layer
-//     Layer 3: Numpad layer
-//     Layer 4: Gaming layer, with left space acting as space and PrtSc acting as escape
-//     Layer 5: Navigation layer
-//     Layer 6: Mouse layer
+//     Layer 3: Symbols layer
+//     Layer 4: Numpad layer
+//     Layer 5: Gaming layer, with left space acting as space and PrtSc acting as escape
+//     Layer 6: Navigation layer
+//     Layer 7: Mouse layer
+//     Layer 8: Numpad layer
 // To toggle between normal and gaming mode: Fn + Smiley
 // Otherwise, the keyboard should feel exactly the same (layer 1 ~ layer 4, layer 2 ~ layer 5)
 
-#define GAMING_LAYER_NUM 4
+#define GAMING_LAYER_NUM 5
 
 bool encoder_update_user(uint8_t index, bool clockwise) {
 	// Only left encoder supported
