@@ -157,13 +157,49 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 	return true;
 }
 
+// This turns the following key press sequence...
+// 1. LT(2, KC_A) Down
+// 2. KC_L Down (the L key is also mapped to KC_RGHT on layer 2)
+// 3. KC_L Up
+// 4. LT(2, KC_A) Up
+// ... into KC_RGHT instead of 'al' regardless of TAPPING_TERM duration.
+// This helps when *quickly* typing a key on an upper layer.
+//
+// In my specific situation, this helps with F+Q (expected to generate Escape),
+// a key combination which I tend to type very quickly. Without this feature,
+// I would get 'fq'.
 bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
 	switch (keycode) {
 		case LT(1,KC_F):
+		case LT(3,KC_D):
 			// Immediately select the hold action when another key is tapped.
 			return true;
 		default:
 			// Do not select the hold action when another key is tapped.
 			return false;
 	}
+}
+
+// This turns the following key press sequence...
+// 1. LT(2, KC_A) Down
+// 2. KC_L Down (the L key is also mapped to KC_RGHT on layer 2)
+// 3. LT(2, KC_A) Up
+// 4. KC_L Up
+// ... into KC_RGHT instead of 'al'.
+// This helps when quickly typing a key on an upper layer, and accidentally
+// ending up "rolling" into that key (releasing the layer key while that
+// target key is still held).
+//
+// In my specific situation, this helps with D+K (expected to generate dash),
+// a key combination which I tend to type very quickly. Without this feature,
+// I would get 'dk'.
+bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case LT(3,KC_D):
+            // Immediately select the hold action when another key is pressed.
+            return true;
+        default:
+            // Do not select the hold action when another key is pressed.
+            return false;
+    }
 }
