@@ -193,11 +193,13 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
 // In my specific situation, this helps with D+K (expected to generate dash),
 // a key combination which I tend to type very quickly. Without this feature,
 // I would get 'dk'.
+// ... unfortunately it also breaks times when I *do* want to roll, like 'ds'
+// in the world "builds". So disabled for now.
 bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        case LT(3,KC_D):
+        //case LT(3,KC_D):
             // Immediately select the hold action when another key is pressed.
-            return true;
+            //return true;
         default:
             // Do not select the hold action when another key is pressed.
             return false;
