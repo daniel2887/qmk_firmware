@@ -33,7 +33,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // To toggle between normal and gaming mode: Fn + Smiley
 // Otherwise, the keyboard should feel exactly the same (layer 1 ~ layer 4, layer 2 ~ layer 5)
 
-#define GAMING_LAYER_NUM 6
+#define _NAV 1
+#define _MOUSE 2
+#define _SYM 3
+#define _NUM 4
+#define _FN 5
+#define _GAMING 6
 
 bool encoder_update_user(uint8_t index, bool clockwise) {
 	// Only left encoder supported
@@ -94,9 +99,14 @@ void keyboard_post_init_user(void) {
 	rgb_set_normal();
 }
 
+layer_state_t layer_state_set_user(layer_state_t state) {
+	state = update_tri_layer_state(state, _NAV, _SYM, _NUM);
+	return state;
+}
+
 layer_state_t default_layer_state_set_user(layer_state_t state) {
-    //rgblight_set_layer_state(1, layer_state_cmp(state, GAMING_LAYER_NUM));
-	if (layer_state_cmp(state, GAMING_LAYER_NUM)) {
+	//rgblight_set_layer_state(1, layer_state_cmp(state, _GAMING));
+	if (layer_state_cmp(state, _GAMING)) {
 		rgb_set_gaming();
 	} else {
 		rgb_set_normal();
