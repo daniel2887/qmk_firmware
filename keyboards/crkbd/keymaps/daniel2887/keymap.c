@@ -57,17 +57,21 @@ oled_rotation_t oled_init_user(oled_rotation_t rotation) {
 // }
 
 #define L_BASE 0
-#define L_NAV 1
-#define L_SYMB 2
-#define L_NUM 3
-#define L_MOUSE 4
-#define L_FN 5
+#define L_GAME 1
+#define L_NAV 2
+#define L_SYMB 3
+#define L_NUM 4
+#define L_MOUSE 5
+#define L_FN 6
 
 void oled_render_layer_state(void) {
     oled_write_P(PSTR("Layer: "), false);
     switch (get_highest_layer(layer_state)) {
         case L_BASE:
             oled_write_P(PSTR("Default\n"), false);
+            break;
+		case L_GAME:
+            oled_write_P(PSTR("GAME\n"), false);
             break;
         case L_NAV:
             oled_write_P(PSTR("NAV\n"), false);
@@ -83,7 +87,7 @@ void oled_render_layer_state(void) {
             break;
 		case L_FN:
             oled_write_P(PSTR("FUNC\n"), false);
-            break;			
+            break;
         default:
             // Or use the write_ln shortcut over adding '\n' to the end of your string
             oled_write_ln_P(PSTR("Undefined"), false);
@@ -198,4 +202,54 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 		halfmin_counter = 0;
 	}
 	return true;
+}
+
+// This turns the following key press sequence...
+// 1. LT(2, KC_A) Down
+// 2. KC_L Down (the L key is also mapped to KC_RGHT on layer 2)
+// 3. KC_L Up
+// 4. LT(2, KC_A) Up
+// ... into KC_RGHT instead of 'al' regardless of TAPPING_TERM duration.
+// This helps when *quickly* typing a key on an upper layer.
+//
+// In my specific situation, this helps with F+Q (expected to generate Escape),
+// a key combination which I tend to type very quickly. Without this feature,
+// I would get 'fq'.
+bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
+	switch (keycode) {
+		case LT(2,KC_SPC):
+			// Immediately select the hold action when another key is tapped.
+			return true;
+		default:
+			// Do not select the hold action when another key is tapped.
+			return false;
+	}
+}
+
+static void default_layer_rgb_set_normal(void) {
+	rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
+	rgblight_sethsv_noeeprom(127, 0, 96);
+}
+
+static void default_layer_rgb_set_gaming(void) {
+	rgblight_sethsv_noeeprom(85, 255, 96);
+}
+
+static void default_layer_rgb_set_unknown(void) {
+	rgblight_sethsv_noeeprom(0, 0, 0);
+}
+
+void keyboard_post_init_user(void) {
+	default_layer_rgb_set_normal();
+}
+
+layer_state_t default_layer_state_set_user(layer_state_t state) {
+	if (layer_state_cmp(state, L_GAME)) {
+		default_layer_rgb_set_gaming();
+	} else if (layer_state_cmp(state, L_BASE)) {
+		default_layer_rgb_set_normal();
+	} else {
+		default_layer_rgb_set_unknown();
+	}
+    return state;
 }
