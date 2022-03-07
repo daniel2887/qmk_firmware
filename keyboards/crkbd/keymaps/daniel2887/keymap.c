@@ -22,40 +22,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // Hacky but meh
 #include "daniel2887_keymap.h"
 
-#ifdef OLED_ENABLE
-oled_rotation_t oled_init_user(oled_rotation_t rotation) {
-  if (!is_keyboard_master()) {
-    return OLED_ROTATION_180;  // flips the display 180 degrees if offhand
-  }
-  return rotation;
-}
-
-// #define L_BASE 0
-// #define L_NAV 2
-// #define L_SYMB 4
-// #define L_ADJUST 8
-
-// void oled_render_layer_state(void) {
-    // oled_write_P(PSTR("Layer: "), false);
-    // switch (layer_state) {
-        // case L_BASE:
-            // oled_write_ln_P(PSTR("Default"), false);
-            // break;
-        // case L_NAV:
-            // oled_write_ln_P(PSTR("Lower"), false);
-            // break;
-        // case L_SYMB:
-            // oled_write_ln_P(PSTR("Raise"), false);
-            // break;
-        // case L_ADJUST:
-        // case L_ADJUST|L_NAV:
-        // case L_ADJUST|L_SYMB:
-        // case L_ADJUST|L_NAV|L_SYMB:
-            // oled_write_ln_P(PSTR("Adjust"), false);
-            // break;
-    // }
-// }
-
 #define L_BASE 0
 #define L_GAME 1
 #define L_NAV 2
@@ -63,6 +29,14 @@ oled_rotation_t oled_init_user(oled_rotation_t rotation) {
 #define L_NUM 4
 #define L_MOUSE 5
 #define L_FN 6
+
+#ifdef OLED_ENABLE
+oled_rotation_t oled_init_user(oled_rotation_t rotation) {
+  if (!is_keyboard_master()) {
+    return OLED_ROTATION_180;  // flips the display 180 degrees if offhand
+  }
+  return rotation;
+}
 
 void oled_render_layer_state(void) {
     oled_write_P(PSTR("Layer: "), false);
@@ -160,7 +134,7 @@ bool oled_task_user(void) {
 // From https://www.reddit.com/r/MechanicalKeyboards/comments/ix65z0/looking_for_qmk_led_idle_timeout_info/
 // Slightly modified by me
 // Backlight timeout feature
-#define RGB_TIMEOUT 15    // in minutes
+#define RGB_TIMEOUT 10    // in minutes
 static uint16_t idle_timer = 0;
 static uint8_t halfmin_counter = 0;
 static uint8_t old_rgb_value = -1; 
@@ -218,6 +192,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
 	switch (keycode) {
 		case LT(2,KC_SPC):
+		case LT(2,KC_F): // Nav
+		case LT(3,KC_D): // Symbols
 			// Immediately select the hold action when another key is tapped.
 			return true;
 		default:
@@ -226,8 +202,12 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
 	}
 }
 
+layer_state_t layer_state_set_user(layer_state_t state) {
+	state = update_tri_layer_state(state, L_NAV, L_SYMB, L_NUM);
+	return state;
+}
+
 static void default_layer_rgb_set_normal(void) {
-	rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
 	rgblight_sethsv_noeeprom(127, 0, 96);
 }
 
@@ -240,6 +220,7 @@ static void default_layer_rgb_set_unknown(void) {
 }
 
 void keyboard_post_init_user(void) {
+	rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
 	default_layer_rgb_set_normal();
 }
 
