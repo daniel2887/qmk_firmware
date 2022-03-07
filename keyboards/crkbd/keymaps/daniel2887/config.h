@@ -24,8 +24,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /* Select hand configuration */
 // #define MASTER_LEFT
-#define MASTER_RIGHT
-// #define EE_HANDS
+// #define MASTER_RIGHT
+#define EE_HANDS
 
 //Doesn't work currently... maybe there's a way...
 //#define SPLIT_USB_DETECT
