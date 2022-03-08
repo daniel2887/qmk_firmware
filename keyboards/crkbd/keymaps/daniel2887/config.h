@@ -43,6 +43,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MOUSEKEY_MAX_SPEED 5
 #define MOUSEKEY_DELAY 100
 
+#define RGBLIGHT_SLEEP
+
 #ifdef RGBLIGHT_ENABLE
     #undef RGBLED_NUM
     #define RGBLIGHT_ANIMATIONS
