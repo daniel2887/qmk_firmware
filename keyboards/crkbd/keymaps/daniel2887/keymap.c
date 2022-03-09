@@ -29,10 +29,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define L_NUM 4
 #define L_MOUSE 5
 #define L_FN 6
+#define L_GAME_NUM 7
 
 #ifdef OLED_ENABLE
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
-  if (!is_keyboard_master()) {
+  if (!is_keyboard_left()) {
     return OLED_ROTATION_180;  // flips the display 180 degrees if offhand
   }
   return rotation;
@@ -40,27 +41,30 @@ oled_rotation_t oled_init_user(oled_rotation_t rotation) {
 
 void oled_render_layer_state(void) {
     oled_write_P(PSTR("Layer: "), false);
-    switch (get_highest_layer(layer_state)) {
+    switch (get_highest_layer(layer_state | default_layer_state)) {
         case L_BASE:
             oled_write_P(PSTR("Default\n"), false);
             break;
 		case L_GAME:
-            oled_write_P(PSTR("GAME\n"), false);
+            oled_write_P(PSTR("Gaming\n"), false);
             break;
         case L_NAV:
-            oled_write_P(PSTR("NAV\n"), false);
+            oled_write_P(PSTR("Navigation\n"), false);
             break;
         case L_SYMB:
-            oled_write_P(PSTR("SYMB\n"), false);
+            oled_write_P(PSTR("Symbols\n"), false);
             break;
 		case L_NUM:
-            oled_write_P(PSTR("NUM\n"), false);
+            oled_write_P(PSTR("Numpad\n"), false);
             break;
 		case L_MOUSE:
-            oled_write_P(PSTR("MOUSE\n"), false);
+            oled_write_P(PSTR("Mouse & Media\n"), false);
             break;
 		case L_FN:
-            oled_write_P(PSTR("FUNC\n"), false);
+            oled_write_P(PSTR("F-keys & RGB\n"), false);
+            break;
+		case L_GAME_NUM:
+            oled_write_P(PSTR("Gaming Nums\n"), false);
             break;
         default:
             // Or use the write_ln shortcut over adding '\n' to the end of your string
@@ -123,6 +127,7 @@ void oled_render_logo(void) {
 bool oled_task_user(void) {
     if (is_keyboard_master()) {
         oled_render_layer_state();
+		oled_write_ln_P(PSTR("\n"), false);
         oled_render_keylog();
     } else {
         oled_render_logo();
