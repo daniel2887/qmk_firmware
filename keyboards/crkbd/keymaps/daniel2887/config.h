@@ -35,6 +35,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 //#define TAPPING_FORCE_HOLD
 #define TAPPING_TERM 200
+#define TAPPING_TERM_PER_KEY
 #define UNICODE_SELECTED_MODES UC_LNX
 #define PERMISSIVE_HOLD_PER_KEY
 #define HOLD_ON_OTHER_KEY_PRESS_PER_KEY
@@ -47,15 +48,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #ifdef RGBLIGHT_ENABLE
     #undef RGBLED_NUM
-    #define RGBLIGHT_ANIMATIONS
+    //#define RGBLIGHT_ANIMATIONS
 	#define RGBLED_NUM 27
     //#define RGBLED_NUM 54
 	//#undef RGBLED_SPLIT
 	//#define RGBLED_SPLIT { 27, 27 }
     #define RGBLIGHT_LIMIT_VAL 120
     #define RGBLIGHT_HUE_STEP 10
-    #define RGBLIGHT_SAT_STEP 17
-    #define RGBLIGHT_VAL_STEP 17
+    #define RGBLIGHT_SAT_STEP 5
+    #define RGBLIGHT_VAL_STEP 5
 #endif
 
 #ifdef RGB_MATRIX_ENABLE
