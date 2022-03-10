@@ -19,6 +19,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include QMK_KEYBOARD_H
 #include <stdio.h>
 
+// Tap Dance declarations
+// This needs to be defined here as it's used inside the keymap header
+// that gets included afterwards.
+enum {
+    TD_GAME_1 = 0,
+	TD_GAME_2,
+	TD_GAME_3,
+	TD_GAME_4,	
+};
+
 // Hacky but meh
 #include "daniel2887_keymap.h"
 
@@ -207,6 +217,15 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
 	}
 }
 
+uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case TD(TD_GAME_1):
+            return 300;
+        default:
+            return TAPPING_TERM;
+    }
+}
+
 layer_state_t layer_state_set_user(layer_state_t state) {
 	state = update_tri_layer_state(state, L_NAV, L_SYMB, L_NUM);
 	return state;
@@ -239,3 +258,12 @@ layer_state_t default_layer_state_set_user(layer_state_t state) {
 	}
     return state;
 }
+
+// Tap Dance definitions
+qk_tap_dance_action_t tap_dance_actions[] = {
+    // Tap once for Escape, twice for Caps Lock
+    [TD_GAME_1] = ACTION_TAP_DANCE_DOUBLE(KC_Q, KC_1),
+	[TD_GAME_2] = ACTION_TAP_DANCE_DOUBLE(KC_E, KC_2),
+	[TD_GAME_3] = ACTION_TAP_DANCE_DOUBLE(KC_R, KC_3),
+	[TD_GAME_4] = ACTION_TAP_DANCE_DOUBLE(KC_T, KC_4),
+};
