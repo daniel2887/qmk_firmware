@@ -23,13 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //#define USE_MATRIX_I2C
 
 /* Select hand configuration */
-// #define MASTER_LEFT
-// #define MASTER_RIGHT
 #define EE_HANDS
-
-//Doesn't work currently... maybe there's a way...
-//#define SPLIT_USB_DETECT
-//#define SPLIT_USB_TIMEOUT 2000
 
 #define USE_SERIAL_PD2
 
@@ -47,13 +41,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define RGBLIGHT_SLEEP
 
 #ifdef RGBLIGHT_ENABLE
+	//#define RGBLIGHT_ANIMATIONS // lots of flash space... instead, enable specific effects
+	//#define RGBLIGHT_EFFECT_CHRISTMAS
+	//#define RGBLIGHT_EFFECT_CHRISTMAS_INTERVAL 30
+	//#define RGBLIGHT_EFFECT_TWINKLE
+	//#define RGBLIGHT_EFFECT_TWINKLE_LIFE 150
+	//#define RGBLIGHT_EFFECT_RAINBOW_MOOD
+	//#define RGBLIGHT_EFFECT_RAINBOW_SWIRL
+	//#define RGBLIGHT_EFFECT_KNIGHT
+
     #undef RGBLED_NUM
-    //#define RGBLIGHT_ANIMATIONS
 	#define RGBLED_NUM 27
     //#define RGBLED_NUM 54
 	//#undef RGBLED_SPLIT
 	//#define RGBLED_SPLIT { 27, 27 }
-    #define RGBLIGHT_LIMIT_VAL 120
+    //#define RGBLIGHT_LIMIT_VAL 255
     #define RGBLIGHT_HUE_STEP 10
     #define RGBLIGHT_SAT_STEP 5
     #define RGBLIGHT_VAL_STEP 5
