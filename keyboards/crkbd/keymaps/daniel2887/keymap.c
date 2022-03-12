@@ -26,7 +26,10 @@ enum {
     TD_GAME_1 = 0,
 	TD_GAME_2,
 	TD_GAME_3,
-	TD_GAME_4,	
+	TD_GAME_4,
+	TD_GAME_5,
+	TD_GAME_ESC,
+	TD_GAME_ENTER,
 };
 
 // Hacky but meh
@@ -219,6 +222,10 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
 
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
+		// E is often used for interactions and is easy to double tap; make it a bit snappier.
+        case TD(TD_GAME_2):
+            return 175;
+		// Q is harder to reach and double tap; give it a bit more time.
         case TD(TD_GAME_1):
             return 300;
         default:
@@ -226,25 +233,39 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     }
 }
 
+// Tap Dance definitions
+qk_tap_dance_action_t tap_dance_actions[] = {
+    // Tap once for Escape, twice for Caps Lock
+    [TD_GAME_1] = ACTION_TAP_DANCE_DOUBLE(KC_Q, KC_1),
+	[TD_GAME_2] = ACTION_TAP_DANCE_DOUBLE(KC_E, KC_2),
+	[TD_GAME_3] = ACTION_TAP_DANCE_DOUBLE(KC_R, KC_3),
+	[TD_GAME_4] = ACTION_TAP_DANCE_DOUBLE(KC_F, KC_4),
+	[TD_GAME_5] = ACTION_TAP_DANCE_DOUBLE(KC_V, KC_5),
+	[TD_GAME_ESC] = ACTION_TAP_DANCE_DOUBLE(KC_TAB, KC_ESC),
+	[TD_GAME_ENTER] = ACTION_TAP_DANCE_DOUBLE(KC_QUOT, KC_ENTER),
+};
+
 layer_state_t layer_state_set_user(layer_state_t state) {
 	state = update_tri_layer_state(state, L_NAV, L_SYMB, L_NUM);
 	return state;
 }
 
 static void default_layer_rgb_set_normal(void) {
-	rgblight_sethsv_noeeprom(127, 0, 96);
+	rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
+	rgblight_sethsv_noeeprom(127, 0, 90);
 }
 
 static void default_layer_rgb_set_gaming(void) {
-	rgblight_sethsv_noeeprom(85, 255, 96);
+	rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
+	rgblight_sethsv_noeeprom(85, 255, 110);
 }
 
 static void default_layer_rgb_set_unknown(void) {
+	rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
 	rgblight_sethsv_noeeprom(0, 0, 0);
 }
 
 void keyboard_post_init_user(void) {
-	rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
 	default_layer_rgb_set_normal();
 }
 
@@ -258,12 +279,3 @@ layer_state_t default_layer_state_set_user(layer_state_t state) {
 	}
     return state;
 }
-
-// Tap Dance definitions
-qk_tap_dance_action_t tap_dance_actions[] = {
-    // Tap once for Escape, twice for Caps Lock
-    [TD_GAME_1] = ACTION_TAP_DANCE_DOUBLE(KC_Q, KC_1),
-	[TD_GAME_2] = ACTION_TAP_DANCE_DOUBLE(KC_E, KC_2),
-	[TD_GAME_3] = ACTION_TAP_DANCE_DOUBLE(KC_R, KC_3),
-	[TD_GAME_4] = ACTION_TAP_DANCE_DOUBLE(KC_T, KC_4),
-};
