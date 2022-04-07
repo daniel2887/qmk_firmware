@@ -220,6 +220,23 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
 	}
 }
 
+bool get_tapping_force_hold(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+		// This is to avoid a situation in which I want to type "CD-PHY"
+		// (where D + K should yield '-'), but I actually get "CDdk" due to
+		// auto-repeat of the letter D kicking in instead of a layer switch
+		// due to the quick double tap of D in that word.
+        case LT(3,KC_D):
+		// Similarly, this is to avoid a situation in which I want to type "df",
+		// or any word ending with F, followed by enter or some navigation
+		// key (which is on the layer triggered by F).
+		case LT(2,KC_F):
+            return true;
+        default:
+            return false;
+    }
+}
+
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
 		// E is often used for interactions and is easy to double tap; make it a bit snappier.
