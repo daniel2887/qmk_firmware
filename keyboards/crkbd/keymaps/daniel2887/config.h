@@ -33,6 +33,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define UNICODE_SELECTED_MODES UC_LNX
 #define PERMISSIVE_HOLD_PER_KEY
 #define HOLD_ON_OTHER_KEY_PRESS_PER_KEY
+#define TAPPING_FORCE_HOLD_PER_KEY
 
 #define MOUSEKEY_INTERVAL 16
 #define MOUSEKEY_MAX_SPEED 5
