@@ -47,7 +47,7 @@
       "LALT_T(KC_APP)",
       "KC_LCTL",
       "KC_SPC",
-      "MO(2)",
+      "LT(2,KC_ENT)",
       "MO(6)"
     ],
     [
@@ -91,7 +91,7 @@
       "LT(9,KC_LALT)",
       "KC_SPC",
       "KC_SPC",
-      "MO(2)",
+      "LT(2,KC_ENT)",
       "MO(7)"
     ],
     [

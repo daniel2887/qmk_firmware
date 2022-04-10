@@ -245,6 +245,9 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
 		// Q is harder to reach and double tap; give it a bit more time.
         case TD(TD_GAME_1):
             return 300;
+		// Try to make LT enter a bit snappier.
+		case LT(2,KC_ENT):
+			return 150;
         default:
             return TAPPING_TERM;
     }
