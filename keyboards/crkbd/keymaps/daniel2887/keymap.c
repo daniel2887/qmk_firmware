@@ -248,6 +248,11 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
 		// Try to make LT enter a bit snappier.
 		case LT(2,KC_ENT):
 			return 150;
+		// This is to address unintended triggering of the mouse/media layer when
+		// typing words like "size" an rolling over "z" and "e". Increase tapping term
+		// required to switch into the media layer.
+		case LT(5,KC_Z):
+			return 400;
         default:
             return TAPPING_TERM;
     }
