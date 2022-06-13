@@ -1,4 +1,6 @@
 OLED_ENABLE = yes		
 
+CAPS_WORD_ENABLE = yes
+
 PS2_MOUSE_ENABLE = yes	
 MOUSEKEY_ENABLE = yes
