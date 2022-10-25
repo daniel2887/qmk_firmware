@@ -1,6 +1,6 @@
 # TPS42
 
-![Buzzard Keyboard]([wired_top.jpg (1200×800) (raw.githubusercontent.com)](https://raw.githubusercontent.com/crehmann/TPS42/main/Assets/wired_top.jpg?token=GHSAT0AAAAAABYL7KHU42JJI7N2FKVAFDNAY2YEDXA))
+![https://raw.githubusercontent.com/crehmann/TPS42/main/Assets/wired_top.jpg]()
 
 TPS42 is a 42/36 keys ergonomic split keyboard. 
 
