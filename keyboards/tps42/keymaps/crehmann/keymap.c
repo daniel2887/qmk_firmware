@@ -1,4 +1,4 @@
-// Copyright 2021 Christoph Rehmann (crehmann)
+ // Copyright 2021 Christoph Rehmann (crehmann)
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include QMK_KEYBOARD_H
@@ -6,6 +6,7 @@
 
 #ifdef PS2_MOUSE_ENABLE
     #include "ps2_mouse.h"
+    #include "ps2.h"
 #endif
 
 enum layers {
@@ -14,7 +15,7 @@ enum layers {
     _SYMB,
     _NUMR,
     _FUNL,
-    _MOAJ
+    _MOUS
 };
 
 
@@ -24,7 +25,7 @@ enum layers {
 #define SYMB     MO(_SYMB)
 #define NUMR     MO(_NUMR)
 #define FUNL     MO(_FUNL)
-#define MOAD     MO(_MOAJ)
+#define MOUS     MO(_MOUS)
 
 // Left-hand home row mods
 #define GUI_Y   LGUI_T(CH_Y)
@@ -58,6 +59,7 @@ enum layers {
 #define UC_CUT  LCTL(KC_X)
 #define UC_MUTE SGUI(KC_M)
 #define UC_OSFT OSM(MOD_LSFT)
+#define UC_LTMS LT(MOUS, KC_S)
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -70,7 +72,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //  *          |      |      |      |      |      |      |                                               |      |      |      |      |      |      |
 //  *          ,------+------+------+------+------+------|                                               |------+------+------+------+------+------.
 //  *          |      |   A  |   S  |   D  |   F  |   G  |                                               |   H  |   J  |   K  |   L  |  ; : |      |
-//  *          |      |      |      |      |      |      |                                               |      |      |      |      |      |      |
+//  *          |      |      | MOUSE|      |      |      |                                               |      |      |      |      |      |      |
 //  *          |------+------+------+------+------+------|                                               |------+------+------+------+------+------|
 //  *          |      |   Y  |   X  |   C  |   F  |   B  |                                               |   N  |   M  |  , < |  . > |  / ? |      |
 //  *          |      |  GUI | LALT | LCTL | LSFT | RALT |                                               | RALT | LSFT | LCTL | LALT |  GUI |      |
@@ -81,7 +83,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //  */
     [_BASE] = LAYOUT(
       _______, KC_Q   , KC_W   , KC_E   , KC_R   , KC_T   ,                                        CH_Z   , KC_U   , KC_I   , KC_O   , KC_P    , _______, 
-      _______, KC_A   , KC_S   , KC_D   , KC_F   , KC_G   ,                                        KC_H   , KC_J   , KC_K   , KC_L   , KC_SCLN , _______,
+      _______, KC_A   , UC_LTMS, KC_D   , KC_F   , KC_G   ,                                        KC_H   , KC_J   , KC_K   , KC_L   , KC_SCLN , _______,
       _______, GUI_Y  , ALT_X  , CTL_C  , SFT_V  , RALT_B ,                                        RALT_N , SFT_M  , CTL_COM, ALT_DOT, GUI_SLSH, _______,
                                                    UC_TL1 , UC_TL2 , UC_TL3 ,    UC_TR3 , UC_TR2 , UC_TR1
     ),
@@ -128,9 +130,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //  *                                             `--------------------'                   `--------------------'
 //  */
     [_NAVR] = LAYOUT(
-      _______, _______, _______, _______, _______, _______,                                        UC_CUT , KC_BRK , KC_PGUP, KC_PGDN, _______, _______, 
+      _______, _______, _______, _______, _______, _______,                                        UC_CUT , KC_BRK , KC_PSCR, _______, _______, _______, 
       _______, _______, KC_BTN3, KC_BTN2, KC_BTN1, _______,                                        UC_COPY, KC_LEFT, KC_UP  , KC_DOWN, KC_RGHT, _______,
-      _______, _______, _______, _______, _______, _______,                                        UC_PSTE, KC_PSCR, KC_HOME, KC_END , _______ , _______,
+      _______, _______, _______, _______, _______, _______,                                        UC_PSTE, KC_HOME, KC_PGUP, KC_PGDN, KC_END , _______,
                                                    _______, _______, _______,    KC_BSPC, _______, _______
     ),
 // --------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -182,30 +184,31 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       _______, KC_F10 , KC_F1  , KC_F2  , KC_F3  , KC_CAPS,                                        _______, _______, _______, _______, _______, _______,
                                                    _______, KC_SPC , KC_TAB  ,    _______, _______, _______
     ),
-  
+
 // /*
-//  * Mouse & Adjustment Layer
+//  * Mouse Layer
 //  *
 //  *          ,-----------------------------------------.                                               ,-----------------------------------------.
 //  *          |      |      |      |      |      |      |                                               |      |      |      |      |      |      |
 //  *          |      |      |      |      |      |      |                                               |      |      |      |      |      |      |
 //  *          ,------+------+------+------+------+------|                                               |------+------+------+------+------+------.
-//  *          |      |      | BTN3 | BTN2 | BTN1 |      |                                               |      |      |      |      |      |      |
+//  *          |      |      |      | BTN2 | BTN1 |      |                                               |      |      |      |      |      |      |
 //  *          |      |      |      |      |      |      |                                               |      |      |      |      |      |      |
 //  *          |------+------+------+------+------+------|                                               |------+------+------+------+------+------|
-//  *          |      |      |      |      |      |      |                                               | Play |M Prev| VolDn| VolUp|M Next|      |
+//  *          |      |      |      | Copy | Paste|      |                                               |      |      |      |      |      |      |
 //  *          |      |      |      |      |      |      |                                               |      |      |      |      |      |      |
 //  *          `----------------------------------+------+-------------.                   ,-------------+------+----------------------------------'
 //  *                                             |      |      |      |                   |      |      |      |
 //  *                                             |      |      |      |                   |      |      |      |
 //  *                                             `--------------------'                   `--------------------'
 //  */
-    [_MOAJ] = LAYOUT(
+    [_MOUS] = LAYOUT(
       _______, _______, _______, _______, _______, _______,                                        _______, _______, _______, _______, _______, _______,
-      _______, _______, _______, _______, _______, _______,                                        _______, _______, _______, _______, _______, _______,
-      _______, _______, _______, _______, _______, _______,                                        KC_MPLY, KC_MPRV, KC_VOLD, KC_VOLU, KC_MNXT, _______,
+      _______, _______, _______, KC_BTN2, KC_BTN1, _______,                                        _______, _______, _______, _______, _______, _______,
+      _______, _______, _______, UC_COPY, UC_PSTE, _______,                                        _______, _______, _______, _______, _______, _______,
                                                    _______, _______, _______,    _______, _______, _______
     ),
+
 
 // -------------------------------------------------------- TEMPLATE -------------------------------------------------------------------------------------
 // /*
@@ -234,9 +237,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // --------------------------------------------------------------------------------------------------------------------------------------------------------
 };
 
-layer_state_t layer_state_set_user(layer_state_t state) {
-    return update_tri_layer_state(state, _NAVR, _SYMB, _MOAJ);
-}
 
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
@@ -252,3 +252,43 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
             return TAPPING_TERM;
     }
 }
+
+#ifdef PS2_MOUSE_ENABLE
+void ps2_mouse_init_user() {
+    uint8_t rcv;
+
+    // see p24 https://blogs.epfl.ch/icenet/documents/Ykt3Eext.pdf
+
+    // set TrackPoint sensitivity
+    PS2_MOUSE_SEND(0xE2, "tpsens: 0xE2");
+    PS2_MOUSE_SEND(0x81, "tpsens: 0x81");
+    PS2_MOUSE_SEND(0x4A, "tpsens: 0x4A");
+    PS2_MOUSE_SEND(0x49, "tpsens: 0x80");
+
+    // set TrackPoint Negative Inertia factor
+    PS2_MOUSE_SEND(0xE2, "tpnegin: 0xE2");
+    PS2_MOUSE_SEND(0x81, "tpnegin: 0x81");
+    PS2_MOUSE_SEND(0x4D, "tpnegin: 0x4D");
+    PS2_MOUSE_SEND(0x06, "tpnegin: 0x06");
+
+    // set TrackPoint speed
+    // (transfer function upper plateau speed)
+    PS2_MOUSE_SEND(0xE2, "tpsp: 0xE2");
+    PS2_MOUSE_SEND(0x81, "tpsp: 0x81");
+    PS2_MOUSE_SEND(0x60, "tpsp: 0x60");
+    PS2_MOUSE_SEND(0x61, "tpsp: 0x61");
+
+    // inquire pts status
+    rcv = ps2_host_send(0xE2);
+    rcv = ps2_host_send(0x2C);
+    rcv = ps2_host_recv_response();
+    if ((rcv & 1) == 1) {
+    // if on, disable pts
+    rcv = ps2_host_send(0xE2);
+    rcv = ps2_host_send(0x47);
+    rcv = ps2_host_send(0x2C);
+    rcv = ps2_host_send(0x01);
+    }
+    
+}
+#endif
