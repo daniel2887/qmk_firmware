@@ -27,13 +27,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define USE_SERIAL_PD2
 
-//#define TAPPING_FORCE_HOLD
+#define UNICODE_ENABLE = yes
+#define UNICODE_SELECTED_MODES UC_LNX
+
+#define IGNORE_MOD_TAP_INTERRUPT
 #define TAPPING_TERM 200
 #define TAPPING_TERM_PER_KEY
-#define UNICODE_SELECTED_MODES UC_LNX
 #define PERMISSIVE_HOLD_PER_KEY
 #define HOLD_ON_OTHER_KEY_PRESS_PER_KEY
 #define TAPPING_FORCE_HOLD_PER_KEY
+
+#define CAPS_WORD_IDLE_TIMEOUT 3000  // 3 seconds.
 
 #define MOUSEKEY_INTERVAL 16
 #define MOUSEKEY_MAX_SPEED 5

@@ -19,11 +19,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include QMK_KEYBOARD_H
 #include <stdio.h>
 
+#define L_BASE 0
+#define L_GAME 1
+#define L_NAV 2
+#define L_SYMB 3
+#define L_NUM 4
+#define L_MEDIA 5
+#define L_ARROWS 6
+#define L_FN 7
+#define L_UNI 8
+#define L_GAME_NUM 9
+#define L_MOUSE 10
+
 // Tap Dance declarations
 // This needs to be defined here as it's used inside the keymap header
 // that gets included afterwards.
 enum {
-    TD_GAME_1 = 0,
+    TD_DEFAULT_LAYER = 0,
+    TD_GAME_1,
 	TD_GAME_2,
 	TD_GAME_3,
 	TD_GAME_4,
@@ -32,17 +45,107 @@ enum {
 	TD_GAME_ENTER,
 };
 
-// Hacky but meh
-#include "daniel2887_keymap.h"
+enum unicode_names {
+    DEGREE,
+    ROUGHLY_EQ,
+    LEQUALS,
+    GEQUALS,
+    MAYBE_EQ
+};
 
-#define L_BASE 0
-#define L_GAME 1
-#define L_NAV 2
-#define L_SYMB 3
-#define L_NUM 4
-#define L_MOUSE 5
-#define L_FN 6
-#define L_GAME_NUM 7
+const uint32_t unicode_map[] PROGMEM = {
+    [DEGREE]  = 0x00B0,
+    [ROUGHLY_EQ] = 0x2248,
+    [LEQUALS]  = 0x2264,
+    [GEQUALS]  = 0x2265,
+    [MAYBE_EQ]  = 0x225F,
+};
+
+// Hacky but meh
+// #include "daniel2887_keymap.h"
+// Update: replaced that .h file with manually contructed mappings below
+
+#define HOME_S LSFT_T(KC_S)
+#define HOME_L LSFT_T(KC_L)
+
+const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+    [L_BASE] = LAYOUT_split_3x6_3(
+KC_TAB,      KC_Q,             KC_W,   KC_E,            KC_R,            KC_T,    /*|*/ KC_Y,   KC_U,              KC_I,    KC_O,   KC_P,    KC_BSPC,
+MO(L_MOUSE), KC_A,             HOME_S, LT(L_SYMB,KC_D), LT(L_NAV,KC_F),  KC_G,    /*|*/ KC_H,   KC_J,              KC_K,    HOME_L, KC_SCLN, KC_QUOT,
+KC_LSFT,     LT(L_MEDIA,KC_Z), KC_X,   KC_C,            KC_V,            KC_B,    /*|*/ KC_N,   KC_M,              KC_COMM, KC_DOT, KC_SLSH, KC_ENT,
+                                       KC_LGUI,         LALT_T(KC_APP),  KC_LCTL, /*|*/ KC_SPC, LT(L_NAV,CW_TOGG), MO(L_FN)
+          ),
+
+    [L_GAME] = LAYOUT_split_3x6_3(
+TD(TD_GAME_ESC),     KC_Q, KC_W, KC_E,    KC_R,                   KC_T,   /*|*/ KC_Y,   KC_U,         KC_I,    KC_O,   KC_P,    KC_BSPC,
+LT(L_MEDIA,KC_LGUI), KC_A, KC_S, KC_D,    KC_F,                   KC_G,   /*|*/ KC_H,   KC_J,         KC_K,    KC_L,   KC_SCLN, TD(TD_GAME_ENTER),
+KC_LSFT,             KC_Z, KC_X, KC_C,    KC_V,                   KC_B,   /*|*/ KC_N,   KC_M,         KC_COMM, KC_DOT, KC_SLSH, KC_ENT,
+                                 KC_LCTL, LT(L_GAME_NUM,KC_LALT), KC_SPC, /*|*/ KC_SPC, LT(L_NAV,KC_ENT), MO(L_FN)
+          ),
+
+    [L_NAV] = LAYOUT_split_3x6_3(
+KC_NO,   KC_ESC,  KC_NO,   LCTL(LALT(KC_UP)), KC_NO,   LCTL(LALT(LSFT(KC_T))), /*|*/ KC_PGUP, KC_HOME, KC_UP,               KC_END,               KC_DEL, KC_BSPC,
+KC_NO,   KC_NO,   KC_LSFT, KC_TRNS,           KC_NO,   KC_NO,                  /*|*/ KC_PGDN, KC_LEFT, KC_DOWN,             KC_RGHT,              KC_NO,  KC_NO,
+KC_LSFT, KC_NO,   KC_NO,   KC_NO,             KC_NO,   KC_NO,                  /*|*/ KC_NO,   KC_NO,   LCTL(LALT(KC_LEFT)), LCTL(LALT(KC_RIGHT)), KC_NO,  KC_NO,
+                           KC_LGUI,           KC_LALT, KC_LCTL,                /*|*/ KC_BSPC, KC_NO,   KC_NO
+          ),
+
+    [L_SYMB] = LAYOUT_split_3x6_3(
+KC_NO,   KC_NO, KC_NO,   KC_NO,   KC_NO,   KC_NO,   /*|*/ KC_GRV,  KC_LBRC, KC_EXLM, KC_RBRC, KC_ASTR, KC_NO,
+KC_NO,   KC_NO, KC_LSFT, KC_NO,   KC_TRNS, KC_NO,   /*|*/ KC_AMPR, KC_LPRN, KC_MINS, KC_RPRN, KC_DLR,  KC_CIRC,
+KC_LSFT, KC_NO, KC_NO,   KC_NO,   KC_NO,   KC_NO,   /*|*/ KC_PERC, KC_AT,   KC_EQL,  KC_HASH, KC_BSLS, KC_NO,
+                         KC_LGUI, KC_LALT, KC_LCTL, /*|*/ KC_NO,   KC_NO,   MO(L_FN)
+          ),
+
+    [L_NUM] = LAYOUT_split_3x6_3(
+KC_NO,   KC_NO, KC_NO,   KC_NO,   KC_NO,   KC_NO,   /*|*/ KC_NO,  KC_7,  KC_8, KC_9, KC_ASTR, KC_NO,
+KC_NO,   KC_NO, KC_LSFT, KC_NO,   KC_NO,   KC_NO,   /*|*/ KC_NO,  KC_4,  KC_5, KC_6, KC_NO,   KC_NO,
+KC_LSFT, KC_NO, KC_NO,   KC_NO,   KC_NO,   KC_NO,   /*|*/ KC_DOT, KC_1,  KC_2, KC_3, KC_SLSH, KC_NO,
+                         KC_LGUI, KC_LALT, KC_LCTL, /*|*/ KC_0,   KC_NO, KC_NO
+          ),
+
+    [L_MEDIA] = LAYOUT_split_3x6_3(
+KC_NO, KC_NO, KC_MPRV, KC_MPLY, KC_MNXT, KC_VOLU, /*|*/ KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
+KC_NO, KC_NO, KC_NO,   KC_NO,   KC_NO,   KC_MUTE, /*|*/ KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
+KC_NO, KC_NO, KC_NO,   KC_NO,   KC_NO,   KC_VOLD, /*|*/ KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
+                       KC_NO,   KC_NO,   KC_NO,   /*|*/ KC_NO, KC_NO, KC_NO
+          ),
+
+    [L_ARROWS] = LAYOUT_split_3x6_3(
+KC_ESC, KC_NO, KC_NO,   KC_UP,   KC_NO,    KC_VOLU, /*|*/ KC_VOLU, KC_NO,   KC_UP,   KC_NO,    KC_NO, KC_NO,
+KC_NO,  KC_NO, KC_LEFT, KC_DOWN, KC_RIGHT, KC_MUTE, /*|*/ KC_MUTE, KC_LEFT, KC_DOWN, KC_RIGHT, KC_NO, KC_NO,
+KC_NO,  KC_NO, KC_NO,   KC_NO,   KC_NO,    KC_VOLD, /*|*/ KC_VOLD, KC_NO,   KC_NO,   KC_NO,    KC_NO, KC_NO,
+                        KC_NO,   KC_NO,    KC_SPC,  /*|*/ KC_SPC,  KC_NO,   MO(L_FN)
+          ),
+
+    [L_FN] = LAYOUT_split_3x6_3(
+KC_PSCR, RGB_HUI,  RGB_SAI, RGB_VAI, KC_NO,   KC_NO,   /*|*/ KC_NO,  KC_F7, KC_F8, KC_F9, KC_NO, KC_SLEP,
+KC_NO,   RGB_RMOD, RGB_TOG, RGB_MOD, KC_NO,   KC_NO,   /*|*/ KC_F12, KC_F4, KC_F5, KC_F6, KC_NO, KC_NO,
+KC_LSFT, RGB_HUD,  RGB_SAD, RGB_VAD, KC_NO,   KC_NO,   /*|*/ KC_F11, KC_F1, KC_F2, KC_F3, KC_NO, TD(TD_DEFAULT_LAYER),
+                            KC_LGUI, KC_LALT, KC_LCTL, /*|*/ KC_F10, KC_NO, KC_NO
+          ),
+
+    [L_UNI] = LAYOUT_split_3x6_3(
+KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, /*|*/ KC_NO, KC_NO, KC_NO,      X(DEGREE),  KC_NO,       KC_NO,
+KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, /*|*/ KC_NO, KC_NO, KC_NO,      KC_NO,      KC_NO,       KC_NO,
+KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, /*|*/ KC_NO, KC_NO, X(LEQUALS), X(GEQUALS), X(MAYBE_EQ), KC_NO,
+                     KC_NO, KC_NO, KC_NO, /*|*/ KC_NO, KC_NO, KC_NO
+          ),
+
+    [L_GAME_NUM] = LAYOUT_split_3x6_3(
+KC_ESC, KC_1,  KC_NO, KC_2,  KC_3,  KC_6,  /*|*/ KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
+KC_NO,  KC_NO, KC_NO, KC_NO, KC_4,  KC_7,  /*|*/ KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
+KC_NO,  KC_NO, KC_NO, KC_NO, KC_5,  KC_8,  /*|*/ KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
+                      KC_NO, KC_NO, KC_NO, /*|*/ KC_NO, KC_NO, KC_NO
+          ),
+
+    [L_MOUSE] = LAYOUT_split_3x6_3(
+KC_NO,   KC_NO, KC_ACL0, KC_ACL1, KC_ACL2, KC_NO,   /*|*/ KC_WH_U, KC_NO,   KC_MS_U, KC_NO,   KC_NO, KC_NO,
+KC_NO,   KC_NO, KC_LSFT, KC_NO,   KC_NO,   KC_NO,   /*|*/ KC_WH_D, KC_MS_L, KC_MS_D, KC_MS_R, KC_NO, KC_NO,
+KC_LSFT, KC_NO, KC_NO,   KC_NO,   KC_NO,   KC_NO,   /*|*/ KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO, KC_NO,
+                         KC_LGUI, KC_LALT, KC_LCTL, /*|*/ KC_BTN1, KC_BTN2, KC_BTN3
+          )
+};
 
 #ifdef OLED_ENABLE
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
@@ -71,13 +174,19 @@ void oled_render_layer_state(void) {
             oled_write_P(PSTR("Numpad\n"), false);
             break;
 		case L_MOUSE:
-            oled_write_P(PSTR("Mouse & Media\n"), false);
+            oled_write_P(PSTR("Mouse\n"), false);
             break;
 		case L_FN:
-            oled_write_P(PSTR("F-keys & RGB\n"), false);
+            oled_write_P(PSTR("F-keys\n"), false);
             break;
 		case L_GAME_NUM:
             oled_write_P(PSTR("Gaming Nums\n"), false);
+            break;
+		case L_UNI:
+            oled_write_P(PSTR("Unicode symbols\n"), false);
+            break;
+		case L_ARROWS:
+            oled_write_P(PSTR("Arrows\n"), false);
             break;
         default:
             // Or use the write_ln shortcut over adding '\n' to the end of your string
@@ -155,7 +264,7 @@ bool oled_task_user(void) {
 #define RGB_TIMEOUT 10    // in minutes
 static uint16_t idle_timer = 0;
 static uint8_t halfmin_counter = 0;
-static uint8_t old_rgb_value = -1; 
+static uint8_t old_rgb_value = -1;
 static bool rgb_on = true;
 
 void matrix_scan_user(void) {
@@ -180,7 +289,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #ifdef OLED_ENABLE
 		set_keylog(keycode, record);
 #endif // OLED_ENABLE
-		
+
 		if (rgb_on == false || old_rgb_value == -1) {
 			if (old_rgb_value == -1)
 				old_rgb_value = 1;
@@ -209,9 +318,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 // I would get 'fq'.
 bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
 	switch (keycode) {
-		case LT(2,KC_SPC):
-		case LT(2,KC_F): // Nav
-		case LT(3,KC_D): // Symbols
+		case LT(L_NAV,KC_SPC):
+		case LT(L_NAV,KC_F):
+		case LT(L_SYMB,KC_D):
 			// Immediately select the hold action when another key is tapped.
 			return true;
 		default:
@@ -220,17 +329,29 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
 	}
 }
 
+bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        default:
+            // Force the dual-role key press to be handled as a modifier if any
+            // other key was pressed while the mod-tap key is held down.
+            return true;
+    }
+}
+
 bool get_tapping_force_hold(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
 		// This is to avoid a situation in which I want to type "CD-PHY"
 		// (where D + K should yield '-'), but I actually get "CDdk" due to
 		// auto-repeat of the letter D kicking in instead of a layer switch
 		// due to the quick double tap of D in that word.
-        case LT(3,KC_D):
+        case LT(L_SYMB,KC_D):
 		// Similarly, this is to avoid a situation in which I want to type "df",
 		// or any word ending with F, followed by enter or some navigation
 		// key (which is on the layer triggered by F).
-		case LT(2,KC_F):
+		case LT(L_NAV,KC_F):
+        // Hopefully this works out ok...
+		case HOME_S:
+		case HOME_L:
             return true;
         default:
             return false;
@@ -239,28 +360,45 @@ bool get_tapping_force_hold(uint16_t keycode, keyrecord_t *record) {
 
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
+		case HOME_S:
+		case HOME_L:
+        case LT(L_GAME_NUM,KC_LALT):
+			return 150;
 		// E is often used for interactions and is easy to double tap; make it a bit snappier.
         case TD(TD_GAME_2):
             return 175;
+        case TD(TD_GAME_ESC):
+            return 200;
 		// Q is harder to reach and double tap; give it a bit more time.
         case TD(TD_GAME_1):
-            return 300;
-		// Try to make LT enter a bit snappier.
-		case LT(2,KC_ENT):
-			return 150;
 		// This is to address unintended triggering of the mouse/media layer when
 		// typing words like "size" an rolling over "z" and "e". Increase tapping term
 		// required to switch into the media layer.
-		case LT(5,KC_Z):
-			return 400;
+		case LT(L_MEDIA,KC_Z):
+            return 300;
+        case TD(TD_DEFAULT_LAYER):
+            return 1000;
         default:
             return TAPPING_TERM;
     }
 }
 
+void td_default_layer(tap_dance_state_t *state, void *user_data) {
+    if (state->count == 1) {
+        default_layer_set(1U << L_BASE);
+    } else if (state->count == 2) {
+        default_layer_set(1U << L_GAME);
+    } else if (state->count == 3) {
+        default_layer_set(1U << L_ARROWS);
+    } else {
+        reset_tap_dance(state);
+    }
+}
+
 // Tap Dance definitions
-qk_tap_dance_action_t tap_dance_actions[] = {
+tap_dance_action_t tap_dance_actions[] = {
     // Tap once for Escape, twice for Caps Lock
+    [TD_DEFAULT_LAYER] = ACTION_TAP_DANCE_FN(td_default_layer),
     [TD_GAME_1] = ACTION_TAP_DANCE_DOUBLE(KC_Q, KC_1),
 	[TD_GAME_2] = ACTION_TAP_DANCE_DOUBLE(KC_E, KC_2),
 	[TD_GAME_3] = ACTION_TAP_DANCE_DOUBLE(KC_R, KC_3),
@@ -303,4 +441,25 @@ layer_state_t default_layer_state_set_user(layer_state_t state) {
 		default_layer_rgb_set_unknown();
 	}
     return state;
+}
+
+bool caps_word_press_user(uint16_t keycode) {
+    switch (keycode) {
+        // Keycodes that continue Caps Word, with shift applied.
+        case KC_A ... KC_Z:
+            add_weak_mods(MOD_BIT(KC_LSFT));  // Apply shift to next key.
+            return true;
+
+        // Keycodes that continue Caps Word, without shifting.
+        case KC_UNDS:
+        case KC_MINS:
+        case KC_LSFT:
+        case KC_SLSH:
+        case KC_BSLS:
+        case KC_1 ... KC_0:
+            return true;
+
+        default:
+            return false;  // Deactivate Caps Word.
+    }
 }
