@@ -55,8 +55,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	//#define RGBLIGHT_EFFECT_KNIGHT
 
     #undef RGBLED_NUM
-	#define RGBLED_NUM 27
-    //#define RGBLED_NUM 54
+	//#define RGBLED_NUM 27
+	#define RGBLED_NUM 54
 	//#undef RGBLED_SPLIT
 	//#define RGBLED_SPLIT { 27, 27 }
     //#define RGBLIGHT_LIMIT_VAL 255
