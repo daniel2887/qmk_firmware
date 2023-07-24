@@ -43,7 +43,23 @@ enum {
 	TD_GAME_5,
 	TD_GAME_ESC,
 	TD_GAME_ENTER,
+	// Hold to MO(L_NAV), tap to CW_TOGG
+	TD_NAV_CW_TOGG,
 };
+
+// Tap dance instantaneous state
+typedef enum {
+    TD_NONE,
+    TD_UNKNOWN,
+    TD_SINGLE_TAP,
+    TD_SINGLE_HOLD,
+    TD_DOUBLE_TAP
+} td_state_t;
+
+typedef struct {
+    bool is_press_action;
+    td_state_t state;
+} td_tap_t;
 
 enum unicode_names {
     DEGREE,
@@ -70,10 +86,10 @@ const uint32_t unicode_map[] PROGMEM = {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [L_BASE] = LAYOUT_split_3x6_3(
-KC_TAB,      KC_Q,             KC_W,   KC_E,            KC_R,            KC_T,    /*|*/ KC_Y,   KC_U,              KC_I,    KC_O,   KC_P,    KC_BSPC,
-MO(L_MOUSE), KC_A,             HOME_S, LT(L_SYMB,KC_D), LT(L_NAV,KC_F),  KC_G,    /*|*/ KC_H,   KC_J,              KC_K,    HOME_L, KC_SCLN, KC_QUOT,
-KC_LSFT,     LT(L_MEDIA,KC_Z), KC_X,   KC_C,            KC_V,            KC_B,    /*|*/ KC_N,   KC_M,              KC_COMM, KC_DOT, KC_SLSH, KC_ENT,
-                                       KC_LGUI,         LALT_T(KC_APP),  KC_LCTL, /*|*/ KC_SPC, LT(L_NAV,CW_TOGG), MO(L_FN)
+KC_TAB,      KC_Q,             KC_W,   KC_E,            KC_R,            KC_T,    /*|*/ KC_Y,   KC_U,               KC_I,    KC_O,   KC_P,    KC_BSPC,
+MO(L_MOUSE), KC_A,             HOME_S, LT(L_SYMB,KC_D), LT(L_NAV,KC_F),  KC_G,    /*|*/ KC_H,   KC_J,               KC_K,    HOME_L, KC_SCLN, KC_QUOT,
+KC_LSFT,     LT(L_MEDIA,KC_Z), KC_X,   KC_C,            KC_V,            KC_B,    /*|*/ KC_N,   KC_M,               KC_COMM, KC_DOT, KC_SLSH, KC_ENT,
+                                       KC_LGUI,         LALT_T(KC_APP),  KC_LCTL, /*|*/ KC_SPC, TD(TD_NAV_CW_TOGG), MO(L_FN)
           ),
 
     [L_GAME] = LAYOUT_split_3x6_3(
@@ -395,6 +411,45 @@ void td_default_layer(tap_dance_state_t *state, void *user_data) {
     }
 }
 
+// Function associated with all tap dances
+td_state_t cur_dance(tap_dance_state_t *state) {
+    if (state->count == 1) {
+        if (!state->pressed) return TD_SINGLE_TAP;
+        else return TD_SINGLE_HOLD;
+    } else if (state->count == 2) return TD_DOUBLE_TAP;
+    else return TD_UNKNOWN;
+}
+
+// See use of TD_NAV_CW_TOGG
+static td_tap_t nct_tap_state = {
+    .is_press_action = true,
+    .state = TD_NONE
+};
+
+// See use of TD_NAV_CW_TOGG
+void nct_finished(tap_dance_state_t *state, void *user_data) {
+    nct_tap_state.state = cur_dance(state);
+    switch (nct_tap_state.state) {
+        case TD_SINGLE_TAP:
+            caps_word_on();
+            break;
+        case TD_SINGLE_HOLD:
+            layer_on(L_NAV);
+            break;
+        default:
+            break;
+    }
+}
+
+// See use of TD_NAV_CW_TOGG
+void nct_reset(tap_dance_state_t *state, void *user_data) {
+    // If the key was held down and now is released then switch off the layer
+    if (nct_tap_state.state == TD_SINGLE_HOLD) {
+        layer_off(L_NAV);
+    }
+    nct_tap_state.state = TD_NONE;
+}
+
 // Tap Dance definitions
 tap_dance_action_t tap_dance_actions[] = {
     // Tap once for Escape, twice for Caps Lock
@@ -406,6 +461,8 @@ tap_dance_action_t tap_dance_actions[] = {
 	[TD_GAME_5] = ACTION_TAP_DANCE_DOUBLE(KC_V, KC_5),
 	[TD_GAME_ESC] = ACTION_TAP_DANCE_DOUBLE(KC_TAB, KC_ESC),
 	[TD_GAME_ENTER] = ACTION_TAP_DANCE_DOUBLE(KC_QUOT, KC_ENTER),
+	// ref: https://github.com/qmk/qmk_firmware/blob/master/docs/feature_tap_dance.md#example-6-using-tap-dance-for-momentary-layer-switch-and-layer-toggle-keys-idexample-6
+	[TD_NAV_CW_TOGG] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, nct_finished, nct_reset),
 };
 
 layer_state_t layer_state_set_user(layer_state_t state) {
