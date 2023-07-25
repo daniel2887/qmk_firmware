@@ -12,3 +12,6 @@
 #define L_GAME_NUM 9
 #define L_MOUSE 10
 
+#define HOME_S LSFT_T(KC_S)
+#define HOME_L LSFT_T(KC_L)
+

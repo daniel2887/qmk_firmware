@@ -1,6 +1,7 @@
 SRC += ./tap_dance.c
 SRC += ./rgb.c
 SRC += ./oled.c
+SRC += ./tap_hold.c
 
 OLED_ENABLE = yes
 OLED_DRIVER = SSD1306

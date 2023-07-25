@@ -45,9 +45,6 @@ const uint32_t unicode_map[] PROGMEM = {
 // #include "daniel2887_keymap.h"
 // Update: replaced that .h file with manually contructed mappings below
 
-#define HOME_S LSFT_T(KC_S)
-#define HOME_L LSFT_T(KC_L)
-
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [L_BASE] = LAYOUT_split_3x6_3(
 KC_TAB,      KC_Q,             KC_W,   KC_E,            KC_R,            KC_T,    /*|*/ KC_Y,   KC_U,               KC_I,    KC_O,   KC_P,    KC_BSPC,
@@ -141,84 +138,6 @@ void keyboard_post_init_user(void) {
 
 layer_state_t default_layer_state_set_user(layer_state_t state) {
 	return rgb_default_layer_state_set_user(state);
-}
-
-// This turns the following key press sequence...
-// 1. LT(2, KC_A) Down
-// 2. KC_L Down (the L key is also mapped to KC_RGHT on layer 2)
-// 3. KC_L Up
-// 4. LT(2, KC_A) Up
-// ... into KC_RGHT instead of 'al' regardless of TAPPING_TERM duration.
-// This helps when *quickly* typing a key on an upper layer.
-//
-// In my specific situation, this helps with F+Q (expected to generate Escape),
-// a key combination which I tend to type very quickly. Without this feature,
-// I would get 'fq'.
-bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
-	switch (keycode) {
-		case LT(L_NAV,KC_SPC):
-		case LT(L_NAV,KC_F):
-		case LT(L_SYMB,KC_D):
-			// Immediately select the hold action when another key is tapped.
-			return true;
-		default:
-			// Do not select the hold action when another key is tapped.
-			return false;
-	}
-}
-
-bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
-    switch (keycode) {
-        default:
-            // Force the dual-role key press to be handled as a modifier if any
-            // other key was pressed while the mod-tap key is held down.
-            return true;
-    }
-}
-
-bool get_tapping_force_hold(uint16_t keycode, keyrecord_t *record) {
-    switch (keycode) {
-		// This is to avoid a situation in which I want to type "CD-PHY"
-		// (where D + K should yield '-'), but I actually get "CDdk" due to
-		// auto-repeat of the letter D kicking in instead of a layer switch
-		// due to the quick double tap of D in that word.
-        case LT(L_SYMB,KC_D):
-		// Similarly, this is to avoid a situation in which I want to type "df",
-		// or any word ending with F, followed by enter or some navigation
-		// key (which is on the layer triggered by F).
-		case LT(L_NAV,KC_F):
-        // Hopefully this works out ok...
-		case HOME_S:
-		case HOME_L:
-            return true;
-        default:
-            return false;
-    }
-}
-
-uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
-    switch (keycode) {
-		case HOME_S:
-		case HOME_L:
-        case LT(L_GAME_NUM,KC_LALT):
-			return 150;
-		// E is often used for interactions and is easy to double tap; make it a bit snappier.
-        case TD(TD_GAME_2):
-            return 175;
-        case TD(TD_GAME_ESC):
-            return 200;
-		// Q is harder to reach and double tap; give it a bit more time.
-        case TD(TD_GAME_1):
-		// This is to address unintended triggering of the mouse/media layer when
-		// typing words like "size" an rolling over "z" and "e". Increase tapping term
-		// required to switch into the media layer.
-		case LT(L_MEDIA,KC_Z):
-            return 300;
-        case TD(TD_DEFAULT_LAYER):
-            return 1000;
-        default:
-            return TAPPING_TERM;
-    }
 }
 
 layer_state_t layer_state_set_user(layer_state_t state) {
