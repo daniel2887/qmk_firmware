@@ -3,12 +3,6 @@
 
 #pragma once
 
-// TODO: Try to remove these defines, PR #19581
-/* key matrix size */
-/* Rows are doubled up */
-#define MATRIX_ROWS  8
-#define MATRIX_COLS  6
-
 /* Mechanical locking support. Use KC_LCAP, KC_LNUM or KC_LSCR instead in keymap */
 #define LOCKING_SUPPORT_ENABLE
 /* Locking resynchronize hack */
