@@ -3,24 +3,11 @@
 
 #pragma once
 
-/* USB Device descriptor parameter */
-#define VENDOR_ID    0xFEED 
-#define PRODUCT_ID   0xB077
-#define DEVICE_VER   0x0001
-#define MANUFACTURER crehmann
-#define PRODUCT      TPS42
-
+// TODO: Try to remove these defines, PR #19581
 /* key matrix size */
 /* Rows are doubled up */
 #define MATRIX_ROWS  8
 #define MATRIX_COLS  6
-
-
-
-/*
- * Split Keyboard specific options, make sure you have 'SPLIT_KEYBOARD = yes' in your rules.mk, and define SOFT_SERIAL_PIN.
- */
-#define SOFT_SERIAL_PIN D2
 
 /* Mechanical locking support. Use KC_LCAP, KC_LNUM or KC_LSCR instead in keymap */
 #define LOCKING_SUPPORT_ENABLE
@@ -32,7 +19,9 @@
 #define SPLIT_OLED_ENABLE
 #endif
 
-#ifdef PS2_USE_INT
+#define PS2_MOUSE_USE_REMOTE_MODE
+
+#ifdef PS2_DRIVER_INTERRUPT
 #define PS2_CLOCK_PIN   E6
 #define PS2_DATA_PIN    D7
 
