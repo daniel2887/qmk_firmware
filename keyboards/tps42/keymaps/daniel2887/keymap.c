@@ -120,8 +120,8 @@ KC_LSFT, KC_NO, KC_NO,   KC_NO,   KC_NO,   KC_NO,   /*|*/ KC_NO,   KC_NO,   KC_N
 };
 
 layer_state_t layer_state_set_user(layer_state_t state) {
-	state = update_tri_layer_state(state, L_NAV, L_SYMB, L_NUM);
-	return state;
+    state = update_tri_layer_state(state, L_NAV, L_SYMB, L_NUM);
+    return state;
 }
 
 bool caps_word_press_user(uint16_t keycode) {
