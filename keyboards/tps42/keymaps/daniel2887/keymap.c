@@ -17,6 +17,11 @@
 #include "keymap.h"
 #include "tap_dance.h"
 
+#ifdef PS2_MOUSE_ENABLE
+    #include "ps2_mouse.h"
+    #include "ps2.h"
+#endif
+
 enum unicode_names {
     DEGREE,
     ROUGHLY_EQ,
@@ -183,3 +188,78 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #endif // defined AUTO_BUTTONS && defined PS2_MOUSE_ENABLE
     return true;
 }
+
+#ifdef PS2_MOUSE_ENABLE
+static void ps2_mouse_normal_movement(void) {
+    // set TrackPoint sensitivity
+    PS2_MOUSE_SEND(0xE2, "tpsens: 0xE2");
+    PS2_MOUSE_SEND(0x81, "tpsens: 0x81");
+    PS2_MOUSE_SEND(0x4A, "tpsens: 0x4A");
+    PS2_MOUSE_SEND(0x96, "tpsens: 0x96"); // Default = 0x80
+
+    // set TrackPoint Negative Inertia factor
+    PS2_MOUSE_SEND(0xE2, "tpnegin: 0xE2");
+    PS2_MOUSE_SEND(0x81, "tpnegin: 0x81");
+    PS2_MOUSE_SEND(0x4D, "tpnegin: 0x4D");
+    PS2_MOUSE_SEND(0x04, "tpnegin: 0x04"); // Default = 0x06
+
+    // set TrackPoint speed
+    // (transfer function upper plateau speed)
+    PS2_MOUSE_SEND(0xE2, "tpsp: 0xE2");
+    PS2_MOUSE_SEND(0x81, "tpsp: 0x81");
+    PS2_MOUSE_SEND(0x60, "tpsp: 0x60");
+    PS2_MOUSE_SEND(0xFF, "tpsp: 0xFF"); // Default = 0x61
+}
+
+static void ps2_mouse_scroll_movement(void) {
+    // set TrackPoint sensitivity
+    PS2_MOUSE_SEND(0xE2, "tpsens: 0xE2");
+    PS2_MOUSE_SEND(0x81, "tpsens: 0x81");
+    PS2_MOUSE_SEND(0x4A, "tpsens: 0x4A");
+    PS2_MOUSE_SEND(0x30, "tpsens: 0x30"); // Default = 0x80
+
+    // set TrackPoint Negative Inertia factor
+    PS2_MOUSE_SEND(0xE2, "tpnegin: 0xE2");
+    PS2_MOUSE_SEND(0x81, "tpnegin: 0x81");
+    PS2_MOUSE_SEND(0x4D, "tpnegin: 0x4D");
+    PS2_MOUSE_SEND(0x06, "tpnegin: 0x06"); // Default = 0x06
+
+    // set TrackPoint speed
+    // (transfer function upper plateau speed)
+    PS2_MOUSE_SEND(0xE2, "tpsp: 0xE2");
+    PS2_MOUSE_SEND(0x81, "tpsp: 0x81");
+    PS2_MOUSE_SEND(0x60, "tpsp: 0x60");
+    PS2_MOUSE_SEND(0x61, "tpsp: 0x61"); // Default = 0x61
+}
+
+static ps2_mouse_scroll_state_t cur_scroll_state = SCROLL_NONE;
+void ps2_mouse_scroll_user(ps2_mouse_scroll_state_t scroll_state) {
+    if (cur_scroll_state == SCROLL_NONE && scroll_state == SCROLL_SENT) {
+        // Starting scrolling
+        ps2_mouse_scroll_movement();
+    } else if (cur_scroll_state == SCROLL_SENT && scroll_state == SCROLL_NONE) {
+        // Stopping scrolling
+        ps2_mouse_normal_movement();
+    }
+    cur_scroll_state = scroll_state;
+}
+
+void ps2_mouse_init_user() {
+    uint8_t rcv;
+
+    // see p24 https://blogs.epfl.ch/icenet/documents/Ykt3Eext.pdf
+    ps2_mouse_normal_movement();
+
+    // inquire pts status
+    rcv = ps2_host_send(0xE2);
+    rcv = ps2_host_send(0x2C);
+    rcv = ps2_host_recv_response();
+    if ((rcv & 1) == 1) {
+        // if on, disable pts
+        rcv = ps2_host_send(0xE2);
+        rcv = ps2_host_send(0x47);
+        rcv = ps2_host_send(0x2C);
+        rcv = ps2_host_send(0x01);
+    }
+}
+#endif
