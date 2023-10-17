@@ -143,6 +143,9 @@ bool caps_word_press_user(uint16_t keycode) {
         case KC_SLSH:
         case KC_BSLS:
         case KC_1 ... KC_0:
+        // Don't immediately disable CW on this TD;
+        // let the TD function (in tap_dance.c) toggle CW off/on
+        case TD(TD_NAV_CW_TOGG):
             return true;
 
         default:

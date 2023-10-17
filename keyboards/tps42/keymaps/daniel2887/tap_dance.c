@@ -48,7 +48,7 @@ static void nct_finished(tap_dance_state_t *state, void *user_data) {
     nct_tap_state.state = cur_dance(state);
     switch (nct_tap_state.state) {
         case TD_SINGLE_TAP:
-            caps_word_on();
+            caps_word_toggle();
             break;
         case TD_SINGLE_HOLD:
             layer_on(L_NAV);
