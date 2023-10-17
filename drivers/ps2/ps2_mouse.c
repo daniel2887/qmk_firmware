@@ -71,6 +71,8 @@ __attribute__((weak)) void ps2_mouse_init_user(void) {}
 
 __attribute__((weak)) void ps2_mouse_moved_user(report_mouse_t *mouse_report) {}
 
+__attribute__((weak)) void ps2_mouse_scroll_user(ps2_mouse_scroll_state_t state) {}
+
 void ps2_mouse_task(void) {
     static uint8_t buttons_prev = 0;
     extern int     tp_buttons;
@@ -260,11 +262,7 @@ static inline void ps2_mouse_enable_scrolling(void) {
 #define PRESS_SCROLL_BUTTONS mouse_report->buttons |= (PS2_MOUSE_SCROLL_BTN_MASK)
 #define RELEASE_SCROLL_BUTTONS mouse_report->buttons &= ~(PS2_MOUSE_SCROLL_BTN_MASK)
 static inline void ps2_mouse_scroll_button_task(report_mouse_t *mouse_report) {
-    static enum {
-        SCROLL_NONE,
-        SCROLL_BTN,
-        SCROLL_SENT,
-    } scroll_state                     = SCROLL_NONE;
+    static ps2_mouse_scroll_state_t scroll_state = SCROLL_NONE;
     static uint16_t scroll_button_time = 0;
 
     if (PS2_MOUSE_SCROLL_BTN_MASK == (mouse_report->buttons & (PS2_MOUSE_SCROLL_BTN_MASK))) {
@@ -278,6 +276,8 @@ static inline void ps2_mouse_scroll_button_task(report_mouse_t *mouse_report) {
         // If the mouse has moved, update the report to scroll instead of move the mouse
         if (mouse_report->x || mouse_report->y) {
             scroll_state    = SCROLL_SENT;
+            ps2_mouse_scroll_user(scroll_state);
+
             mouse_report->v = -mouse_report->y / (PS2_MOUSE_SCROLL_DIVISOR_V);
             mouse_report->h = mouse_report->x / (PS2_MOUSE_SCROLL_DIVISOR_H);
             mouse_report->x = 0;
@@ -301,6 +301,7 @@ static inline void ps2_mouse_scroll_button_task(report_mouse_t *mouse_report) {
         }
 #endif
         scroll_state = SCROLL_NONE;
+        ps2_mouse_scroll_user(scroll_state);
     }
 
     RELEASE_SCROLL_BUTTONS;

@@ -152,6 +152,12 @@ typedef enum ps2_mouse_sample_rate_e {
     PS2_MOUSE_200_SAMPLES_SEC = 200,
 } ps2_mouse_sample_rate_t;
 
+typedef enum {
+    SCROLL_NONE,
+    SCROLL_BTN,
+    SCROLL_SENT,
+} ps2_mouse_scroll_state_t;
+
 void ps2_mouse_init(void);
 
 void ps2_mouse_init_user(void);
@@ -175,3 +181,5 @@ void ps2_mouse_set_resolution(ps2_mouse_resolution_t resolution);
 void ps2_mouse_set_sample_rate(ps2_mouse_sample_rate_t sample_rate);
 
 void ps2_mouse_moved_user(report_mouse_t *mouse_report);
+
+void ps2_mouse_scroll_user(ps2_mouse_scroll_state_t scroll_state);
