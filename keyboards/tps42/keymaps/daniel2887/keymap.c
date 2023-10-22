@@ -120,7 +120,7 @@ KC_NO,  KC_NO, KC_NO, KC_NO, KC_5,  KC_8,  /*|*/ KC_NO, KC_NO, KC_NO, KC_NO, KC_
     [L_MOUSE] = LAYOUT(
 #if defined PS2_MOUSE_ENABLE
 KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, /*|*/ KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-KC_TRNS, KC_TRNS, KC_LSFT, KC_TRNS, KC_TRNS, KC_TRNS, /*|*/ KC_BTN5, KC_BTN4, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+KC_TRNS, KC_TRNS, KC_LSFT, KC_TRNS, KC_TRNS, KC_TRNS, /*|*/ KC_BTN4, KC_BTN5, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
 KC_LSFT, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, /*|*/ KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
                            KC_LGUI, KC_LALT, KC_LCTL, /*|*/ KC_BTN1, KC_BTN2, KC_BTN3
 #else
@@ -135,6 +135,7 @@ KC_LSFT, KC_NO, KC_NO,   KC_NO,   KC_NO,   KC_NO,   /*|*/ KC_NO,   KC_NO,   KC_N
 layer_state_t layer_state_set_user(layer_state_t state) {
     state = update_tri_layer_state(state, L_NAV, L_SYMB, L_NUM);
     state = update_tri_layer_state(state, L_SYMB, L_FN, L_UNI);
+    dprintf("highest layer = %u\n", get_highest_layer(state));
     return state;
 }
 
@@ -192,7 +193,9 @@ void matrix_scan_user(void) {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #if defined AUTO_BUTTONS && defined PS2_MOUSE_ENABLE
-    if (keycode != KC_BTN1 && keycode != KC_BTN2 && keycode != KC_BTN3) {
+    if (auto_buttons_timer &&
+            (keycode != KC_BTN1 && keycode != KC_BTN2 && keycode != KC_BTN3 &&
+             keycode != KC_BTN4 && keycode != KC_BTN5)) {
         // Some non-mouse key changed state; turn off mouse layer and reset the auto buttons timer
         layer_off(L_MOUSE);
         auto_buttons_timer = 0;
