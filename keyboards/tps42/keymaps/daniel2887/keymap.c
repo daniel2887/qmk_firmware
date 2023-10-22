@@ -22,6 +22,7 @@
     #include "ps2.h"
 #endif
 
+#if 0
 enum unicode_names {
     DEGREE,
     ROUGHLY_EQ,
@@ -37,6 +38,13 @@ const uint32_t unicode_map[] PROGMEM = {
     [GEQUALS]  = 0x2265,
     [MAYBE_EQ]  = 0x225F,
 };
+#endif
+
+#define UC_DEGREE 0x00B0
+#define UC_ROUGHLY_EQ 0x2248
+#define UC_LEQUALS 0x2264
+#define UC_GEQUALS 0x2265
+#define UC_MAYBE_EQ 0x225F
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [L_BASE] = LAYOUT(
@@ -89,16 +97,16 @@ KC_NO,  KC_NO, KC_NO,   KC_NO,   KC_NO,    KC_VOLD, /*|*/ KC_VOLD, KC_NO,   KC_N
           ),
 
     [L_FN] = LAYOUT(
-KC_PSCR, KC_NO, KC_NO, KC_NO,   KC_NO,   KC_NO,   /*|*/ KC_NO,  KC_F7, KC_F8, KC_F9, KC_NO, KC_SLEP,
-KC_NO,   KC_NO, KC_NO, KC_NO,   KC_NO,   KC_NO,   /*|*/ KC_F12, KC_F4, KC_F5, KC_F6, KC_NO, QK_BOOT,
-KC_LSFT, KC_NO, KC_NO, KC_NO,   KC_NO,   KC_NO,   /*|*/ KC_F11, KC_F1, KC_F2, KC_F3, KC_NO, TD(TD_DEFAULT_LAYER),
-                       KC_LGUI, KC_LALT, KC_LCTL, /*|*/ KC_F10, KC_NO, KC_NO
+KC_PSCR, KC_NO, KC_NO, KC_NO,      KC_NO,   KC_NO,   /*|*/ KC_NO,  KC_F7, KC_F8, KC_F9, KC_NO, KC_SLEP,
+KC_NO,   KC_NO, KC_NO, MO(L_SYMB), KC_NO,   KC_NO,   /*|*/ KC_F12, KC_F4, KC_F5, KC_F6, KC_NO, QK_BOOT,
+KC_LSFT, KC_NO, KC_NO, KC_NO,      KC_NO,   KC_NO,   /*|*/ KC_F11, KC_F1, KC_F2, KC_F3, KC_NO, TD(TD_DEFAULT_LAYER),
+                       KC_LGUI,    KC_LALT, KC_LCTL, /*|*/ KC_F10, KC_NO, KC_NO
           ),
 
     [L_UNI] = LAYOUT(
-KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, /*|*/ KC_NO, KC_NO, KC_NO,      X(DEGREE),  KC_NO,       KC_NO,
-KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, /*|*/ KC_NO, KC_NO, KC_NO,      KC_NO,      KC_NO,       KC_NO,
-KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, /*|*/ KC_NO, KC_NO, X(LEQUALS), X(GEQUALS), X(MAYBE_EQ), KC_NO,
+KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, /*|*/ KC_NO, KC_NO, KC_NO,             UC(UC_DEGREE),  KC_NO,           KC_NO,
+KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, /*|*/ KC_NO, KC_NO, UC(UC_ROUGHLY_EQ), KC_NO,          KC_NO,           KC_NO,
+KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, /*|*/ KC_NO, KC_NO, UC(UC_LEQUALS),    UC(UC_GEQUALS), UC(UC_MAYBE_EQ), KC_NO,
                      KC_NO, KC_NO, KC_NO, /*|*/ KC_NO, KC_NO, KC_NO
           ),
 
@@ -126,6 +134,7 @@ KC_LSFT, KC_NO, KC_NO,   KC_NO,   KC_NO,   KC_NO,   /*|*/ KC_NO,   KC_NO,   KC_N
 
 layer_state_t layer_state_set_user(layer_state_t state) {
     state = update_tri_layer_state(state, L_NAV, L_SYMB, L_NUM);
+    state = update_tri_layer_state(state, L_SYMB, L_FN, L_UNI);
     return state;
 }
 
